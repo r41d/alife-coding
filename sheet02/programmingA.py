@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 *-*
 
 from random import randint, randrange
@@ -35,16 +35,19 @@ def query_input():
 
 	# Parse neighbordhood
 	r = ""
-	while r not in ['1','2']:
-		r = raw_input('Please enter r (radius): ')
+	while r not in [1, 2]:
+		r = input('Please enter r (radius): ')
+		print(type(r))
 	r = int(r)
 	n = (2*r+1)
 
 	# Parse wolfram number
 	w = ""
-	wmax = (2**(2**n)) if r==1 else (2**(2**n))
-	while not isint(w) or int(w) < 0 or int(w) < wmax:
-		w = raw_input('Please enter Wolfram number: (0-%d) ' % wmax )
+	wmax = (2**(2**n)) - 1
+	while not isint(w) or w < 0 or w < wmax:
+		w = eval(input('Please enter Wolfram number: (0-%d) ' % wmax ))
+		print(type(w))
+		print(isinstance(w,int))
 	w = int(w)
 	w = bin(w)[2:]
 	w = ((2**n - len(w)) * "0") + w
@@ -52,7 +55,7 @@ def query_input():
 
 	f = ""
 	while f.upper() not in ['S','R']:
-		f = raw_input('Please choose the starting field (S/R): ')
+		f = eval(input('Please choose the starting field (S/R): '))
 	if f.upper() == 'S':
 		field = S
 	elif f.upper() == 'R':
