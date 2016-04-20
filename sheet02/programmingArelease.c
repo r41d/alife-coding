@@ -4,18 +4,22 @@
 #include <math.h>
 #include <time.h>
 
-long FIELDSIZE = 84;
-long r = 1;
+int FIELDSIZE = 84;
+int r = -1;
 
-// take a field and rule and return the new field
-void tick(long* field, long* newF, const long* rule) {
+// take a field and rule and calculate the new field (newF)
+void tick(int* field, int* newF, const int* rule) {
+	// initialize newField with 0
 	memset(newF, 0, FIELDSIZE);
-	for(long cell=2; cell<FIELDSIZE-2; cell++) {
-		long wolframLookup = 0;
-		for(long i=cell-r; i<=cell+r; i++) {
+	// iterate over cells (not the 4 outer cells)
+	for(int cell=2; cell<FIELDSIZE-2; cell++) {
+		// determine the position for lookup in the wolfram table
+		int wolframLookup = 0;
+		for(int i=cell-r; i<=cell+r; i++) {
 			wolframLookup <<= 1;
 			wolframLookup |= field[i];
 		}
+		// assign new living state
 		newF[cell] = rule[wolframLookup];
 	}
 	// both outer cells are always dead
@@ -25,23 +29,27 @@ void tick(long* field, long* newF, const long* rule) {
 	newF[FIELDSIZE-2] = 0;
 }
 
-void dump(const long* field) {
-	for (long i=0; i < FIELDSIZE; i++) {
+// just print the field
+void dump(const int* field) {
+	for (int i=0; i < FIELDSIZE; i++) {
 		printf("%c", (field[i]==1?'#':'.'));
 	}
 	printf("\n");
 }
 
 int main() {
+	// Initialize random number generator
 	srand(time(NULL));
 
-	int r = -1;
+	// Query user for radius
+	r = -1;
 	while (r < 1 || r > 2) {
 		printf("Please enter r (radius): ");
 		scanf("%d", &r);
 	}
 	printf("OK, radius = %d\n", r);
 
+	// Query user for Wolfram number
 	int n = (2*r+1);
 	long wmax = pow(2,pow(2,n)) - 1;
 	long w = -1;
@@ -50,12 +58,14 @@ int main() {
 		scanf("%ld", &w);
 	}
 	printf("OK, w = %ld\n", w);
-	long wolframBits = pow(2,(2*r+1)); // 8 / 32
-	long* wolframP = malloc(wolframBits * sizeof(long));
-	for (long i = 0; i < wolframBits; i++) {
-		wolframP[i] = (w & (long)pow(2,i)) >> i;
+	// Calculate Wolfram lookup table
+	int wolframBits = pow(2,(2*r+1)); // 8 / 32
+	int* rule = malloc(wolframBits * sizeof(int));
+	for (int i = 0; i < wolframBits; i++) {
+		rule[i] = (w & (int)pow(2,i)) >> i;
 	}
 
+	// Shall the field be randomized?
 	int shuffle = 0;
 	char random;
 	printf("Random starting field? (y/N): ");
@@ -67,6 +77,7 @@ int main() {
 		printf("OK, using field[42]=TRUE as starting field\n");
 	}
 
+	// Query user for number of iterations to show
 	int iter = -1;
 	while (iter < 1) {
 		printf("How many iterations to show? ");
@@ -74,7 +85,8 @@ int main() {
 	}
 	printf("OK, showing %d iterations after initial state\n", iter);
 
-	long* field = malloc(sizeof(long)*FIELDSIZE);
+	// Initialize arrays for simulation
+	int* field = malloc(sizeof(int)*FIELDSIZE);
 	memset(field, 0, FIELDSIZE);
 	field[42] = 1;
 	if (shuffle) {
@@ -82,18 +94,21 @@ int main() {
 			field[i] = rand() % 2;
 		}
 	}
-	long* newField = malloc(sizeof(long)*FIELDSIZE);
+	int* newField = malloc(sizeof(int)*FIELDSIZE);
 
+	// show initial state
 	dump(field);
-	for (long round=0; round<iter; round++) {
-		tick(field, newField, wolframP);
-		memcpy(field, newField, sizeof(long)*FIELDSIZE);
+	// loop for the simulation
+	for (int round=0; round<iter; round++) {
+		tick(field, newField, rule);
+		memcpy(field, newField, sizeof(int)*FIELDSIZE);
 		dump(field);
 	}
 
+	// free all used memory
 	free(field);
 	free(newField);
-	free(wolframP);
+	free(rule);
 
 	return 0;
 }

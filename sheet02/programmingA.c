@@ -4,15 +4,15 @@
 #include <math.h>
 #include <time.h>
 
-long FIELDSIZE = 84;
-long r = 1;
+int FIELDSIZE = 84;
+int r = 1;
 
 // take a field and rule and return the new field
-void tick(long* field, long* newF, const long* rule) {
+void tick(int* field, int* newF, const int* rule) {
 	memset(newF, 0, FIELDSIZE);
-	for(long cell=2; cell<FIELDSIZE-2; cell++) {
-		long wolframLookup = 0;
-		for(long i=cell-r; i<=cell+r; i++) {
+	for(int cell=2; cell<FIELDSIZE-2; cell++) {
+		int wolframLookup = 0;
+		for(int i=cell-r; i<=cell+r; i++) {
 			wolframLookup <<= 1;
 			wolframLookup |= field[i];
 		}
@@ -25,8 +25,8 @@ void tick(long* field, long* newF, const long* rule) {
 	newF[FIELDSIZE-2] = 0;
 }
 
-void dump(const long* field) {
-	for (long i=0; i < FIELDSIZE; i++) {
+void dump(const int* field) {
+	for (int i=0; i < FIELDSIZE; i++) {
 		printf("%c", (field[i]==1?'#':'.'));
 	}
 	printf("\n");
@@ -40,16 +40,16 @@ int main(int argc, char** argv) {
 	}
 
 	FIELDSIZE = atoi(argv[1]);
-	long n = atoi(argv[2]);
+	int n = atoi(argv[2]);
 	r = atoi(argv[3]);
-	long rule = atoi(argv[4]);
-	long wolframBits = pow(2,(2*r+1)); // 8 / 32
-	long* wolframP = malloc(wolframBits * sizeof(long));
-	for (long i = 0; i < wolframBits; i++) {
-		wolframP[i] = (rule & (long)pow(2,i)) >> i;
+	long wolf = atoi(argv[4]);
+	int wolframBits = pow(2,(2*r+1)); // 8 / 32
+	int* rule = malloc(wolframBits * sizeof(int));
+	for (int i = 0; i < wolframBits; i++) {
+		rule[i] = (wolf & (int)pow(2,i)) >> i;
 	}
 
-	long* field = malloc(sizeof(long)*FIELDSIZE);
+	int* field = malloc(sizeof(int)*FIELDSIZE);
 	memset(field, 0, FIELDSIZE);
 	field[42] = 1;
 	if (argc > 5 && !strcmp(argv[5], "R")) {
@@ -57,18 +57,18 @@ int main(int argc, char** argv) {
 			field[i] = rand() % 2;
 		}
 	}
-	long* newField = malloc(sizeof(long)*FIELDSIZE);
+	int* newField = malloc(sizeof(int)*FIELDSIZE);
 
 	dump(field);
-	for (long round=0; round<n; round++) {
-		tick(field, newField, wolframP);
-		memcpy(field, newField, sizeof(long)*FIELDSIZE);
+	for (int round=0; round<n; round++) {
+		tick(field, newField, rule);
+		memcpy(field, newField, sizeof(int)*FIELDSIZE);
 		dump(field);
 	}
 
 	free(field);
 	free(newField);
-	free(wolframP);
+	free(rule);
 
 	return 0;
 }
