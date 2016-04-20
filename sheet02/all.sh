@@ -1,0 +1,1 @@
+for i in `seq 0 255`; do ./cellularAutomaton 84 20 1 $i ; done
