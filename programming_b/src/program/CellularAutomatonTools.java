@@ -4,7 +4,7 @@ import algorithms.Algo;
 import algorithms.ForestFire;
 import algorithms.GameOfLife;
 import algorithms.Grid;
-import algorithms.LantonsMouse;
+import algorithms.LangtonsAnt;
 import core.Context;
 import core.Ticker;
 import javafx.beans.property.IntegerProperty;
@@ -22,7 +22,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class Main extends Context {
+public class CellularAutomatonTools extends Context {
 	private static final String TITLE = "Artificial Life";
 	private Grid grid;
 
@@ -35,7 +35,7 @@ public class Main extends Context {
 	private IntegerProperty speed = new SimpleIntegerProperty(3);
 	private int blocked;
 
-	public Main() {
+	public CellularAutomatonTools() {
 		super(TITLE);
 
 		// general settings
@@ -44,9 +44,6 @@ public class Main extends Context {
 		tileSize.set(15);
 	}
 
-	/**
-	 * 
-	 */
 	private void setTicker() {
 		ticker = new Ticker() {
 			@Override
@@ -105,13 +102,13 @@ public class Main extends Context {
 
 	public void updateGrid(Algo algo) {
 		switch (algo) {
-		case ANT:
-			grid = new LantonsMouse(this);
+		case LANGTONS_ANT:
+			grid = new LangtonsAnt(this);
 			break;
-		case CONVEY:
+		case GAME_OF_LIFE:
 			grid = new GameOfLife(this);
 			break;
-		case FORESTFIRE:
+		case FOREST_FIRE:
 			grid = new ForestFire(this);
 			break;
 		default:
@@ -229,7 +226,7 @@ public class Main extends Context {
 		// grid can just be created after knowing the free space
 		canvas.setWidth(gridWidth.get());
 		canvas.setHeight(gridHeight.get());
-		updateGrid(Algo.FORESTFIRE);
+		updateGrid(Algo.FOREST_FIRE);
 
 		setTicker();
 		playing = false;

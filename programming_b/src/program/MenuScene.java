@@ -2,6 +2,7 @@ package program;
 
 import java.util.ArrayList;
 
+import algorithms.Algo;
 import core.Context;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,13 +15,13 @@ import javafx.scene.layout.VBox;
 //import static game.State.*;
 
 public class MenuScene extends Scene {
-	protected Context context;
+	protected CellularAutomatonTools context;
 
 	protected ArrayList<String> menuPoints;
 	private BorderPane background;
 	private BorderPane foreground;
 
-	public MenuScene(Context context) {
+	public MenuScene(CellularAutomatonTools context) {
 		super(new StackPane(), context.windowWidth.get(), context.windowHeight.get());
 
 		this.context = context;
@@ -72,12 +73,15 @@ public class MenuScene extends Scene {
 		buttonAnt.setOnAction((e) -> {
 			// update this
 			context.getSceneMaster().showScreen("grid");
+			context.updateGrid(Algo.LANGTONS_ANT);
 		});
 		buttonGol.setOnAction((e) -> {
 			context.getSceneMaster().showScreen("grid");
+			context.updateGrid(Algo.GAME_OF_LIFE);
 		});
 		buttonForest.setOnAction((e) -> {
 			context.getSceneMaster().showScreen("grid");
+			context.updateGrid(Algo.FOREST_FIRE);
 		});
 		buttonExit.setOnAction((e) -> {
 			getContext().stop();

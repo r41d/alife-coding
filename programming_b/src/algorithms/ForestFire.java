@@ -13,7 +13,8 @@ import core.Context;
 public class ForestFire extends Grid {
 	// internal variables
 	private int[][] next;
-	private double igniteTree = 0.002, growTree = 0.05;
+	private double igniteTree = 0.002; // probability f -- tree to fire
+	private double growTree = 0.05; // probability p -- ash to tree
 
 	public ForestFire(Context context) {
 		super(context);

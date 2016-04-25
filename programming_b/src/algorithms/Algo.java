@@ -1,5 +1,7 @@
 package algorithms;
 
 public enum Algo {
-	CONVEY, ANT, FORESTFIRE
+	LANGTONS_ANT,
+	GAME_OF_LIFE,
+	FOREST_FIRE
 }
