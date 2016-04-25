@@ -17,7 +17,9 @@ public abstract class Context extends Application {
 	public final Color BACK = (Color) Paint.valueOf("#FFFFFF");
 	public final Color BRIGHT = (Color) Paint.valueOf("688D99");
 	public final Color DARK = (Color) Paint.valueOf("#34464D");
-	public final Color CELLS[] = { (Color) Paint.valueOf("#8B7355"), // brown
+	public final Color CELLS_BW[] = { (Color) Paint.valueOf("#000000"), // black
+			(Color) Paint.valueOf("#FFFFFF") }; // white
+	public final Color CELLS_FOREST[] = { (Color) Paint.valueOf("#8B7355"), // brown
 			(Color) Paint.valueOf("#5AA664"), // green
 			(Color) Paint.valueOf("#A6645A") }; // red
 

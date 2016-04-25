@@ -20,6 +20,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class CellularAutomatonTools extends Context {
@@ -34,6 +35,7 @@ public class CellularAutomatonTools extends Context {
 	private boolean playing = true;
 	private IntegerProperty speed = new SimpleIntegerProperty(3);
 	private int blocked;
+	private Algo algo;
 
 	public CellularAutomatonTools() {
 		super(TITLE);
@@ -62,12 +64,15 @@ public class CellularAutomatonTools extends Context {
 	}
 
 	private void render() {
+
+		Color colors[] = (this.algo != Algo.FOREST_FIRE) ? CELLS_BW : CELLS_FOREST;
+
 		// full rendering of the map
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		for (int x = 0; x < grid.n; x++) {
 			for (int y = 0; y < grid.m; y++) {
 				// change color
-				gc.setFill(CELLS[grid.getCell(x, y)]);
+				gc.setFill(colors[grid.getCell(x, y)]);
 
 				// draw rect
 				gc.fillRect(x * tileSize.get(), y * tileSize.get(), tileSize.get(), tileSize.get());
@@ -101,6 +106,7 @@ public class CellularAutomatonTools extends Context {
 	}
 
 	public void updateGrid(Algo algo) {
+		this.algo = algo;
 		switch (algo) {
 		case LANGTONS_ANT:
 			grid = new LangtonsAnt(this);
