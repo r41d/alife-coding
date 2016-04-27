@@ -72,9 +72,9 @@ public class MenuScene extends Scene {
 
 		buttonAnt.setOnAction((e) -> {
 			// update this
-			context.getSceneMaster().showScreen("grid");
-			context.updateGrid(Algo.LANGTONS_ANT);
-		});
+				context.getSceneMaster().showScreen("grid");
+				context.updateGrid(Algo.LANGTONS_ANT);
+			});
 		buttonGol.setOnAction((e) -> {
 			context.getSceneMaster().showScreen("grid");
 			context.updateGrid(Algo.GAME_OF_LIFE);

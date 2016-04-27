@@ -9,5 +9,5 @@ package core;
  *
  */
 public interface Ticker {
-    public void tick(int ticks);
+	public void tick(int ticks);
 }

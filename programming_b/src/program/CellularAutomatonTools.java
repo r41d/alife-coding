@@ -78,7 +78,8 @@ public class CellularAutomatonTools extends Context {
 		barWidth.bind(bar.widthProperty());
 		barHeight.bind(bar.heightProperty());
 		gridWidth.bind(windowWidth);
-		gridHeight.bind(windowHeight.subtract(bar.heightProperty()).subtract(buttons.heightProperty()));
+		gridHeight.bind(windowHeight.subtract(bar.heightProperty()).subtract(
+				buttons.heightProperty()));
 
 		// init screens
 		sceneMaster.addScreen("menu", new MenuScene(this));
