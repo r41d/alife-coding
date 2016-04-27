@@ -34,12 +34,7 @@ public abstract class Context extends Application {
 
 	// instances from the master classes
 	protected final SceneMaster sceneMaster;
-	public AnimationTimer animationTimer;
-	protected Ticker ticker;
 
-	private int passedTicks = 0;
-	private double lastNanoTime = System.nanoTime();
-	private double time = 0;
 
 	protected Scene scene;
 
@@ -63,26 +58,9 @@ public abstract class Context extends Application {
 
 	@Override
 	public void init() {
-		initAnimationTimer();
 	}
 
-	private void initAnimationTimer() {
-		final double fps = 60.0;
-		animationTimer = new AnimationTimer() {
-			@Override
-			public void handle(long currentNanoTime) {
-				// calculate time since last update.
-				time += (currentNanoTime - lastNanoTime) / 1000000000.0;
-				lastNanoTime = currentNanoTime;
-				passedTicks = (int) Math.floor(time * fps);
-				time -= passedTicks / fps;
-
-				if (ticker != null) {
-					ticker.tick(passedTicks);
-				}
-			}
-		};
-	}
+	
 
 	private void initStage() {
 		// stage settings

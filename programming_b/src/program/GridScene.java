@@ -5,6 +5,7 @@ import algorithms.ForestFire;
 import algorithms.GameOfLife;
 import algorithms.Grid;
 import algorithms.LangtonsAnt;
+import core.Ticker;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -19,16 +20,18 @@ import javafx.scene.layout.VBox;
 public class GridScene extends Scene {
 	private CellularAutomatonTools context;
 	private Grid grid;
-	
+	private Algo algo;
+
 	private MenuBar bar;
 	private Canvas canvas;
 	private TilePane buttons;
-	
+
 	public GridScene(CellularAutomatonTools context, Algo algo) {
 		super(new VBox(), context.windowWidth.get(), context.windowHeight.get());
-		
+
 		this.context = context;
-		
+		this.algo = algo;
+
 		canvas = new Canvas(101 * context.tileSize.get(), 82 * context.tileSize.get());
 		switch (algo) {
 		case LANGTONS_ANT:
@@ -43,19 +46,27 @@ public class GridScene extends Scene {
 		}
 		grid.emptyGrid();
 		grid.render();
-		
+
 		bar = new MenuBar();
 		setMenu(bar);
 		buttons = new TilePane(20, 20);
 		setButtons(buttons);
-		
+
 		VBox vboxMenu = (VBox) this.getRoot();
-//		vboxMenu.setMaxWidth(400);
-//		vboxMenu.setPrefWidth(400);
-//		vboxMenu.setFillWidth(true);
 		vboxMenu.setAlignment(Pos.TOP_CENTER);
 		vboxMenu.getChildren().addAll(bar, canvas, buttons);
-		
+	}
+	
+	public void tick(int ticks) {
+		context.blocked -= ticks;
+		while (context.blocked <= 0) {
+			context.blocked -= ticks;
+			while (context.blocked <= 0) {
+				grid.step();
+				grid.render();
+				context.blocked += Math.ceil(Math.pow(10 - context.speed.get(), 2));
+			}
+		}
 	}
 
 	private void setMenu(MenuBar menuBar) {
@@ -84,7 +95,7 @@ public class GridScene extends Scene {
 			grid.chessGrid();
 			grid.render();
 		});
-		
+
 		rnd.setOnAction(e -> {
 			grid.randomGrid();
 			grid.render();
@@ -115,7 +126,7 @@ public class GridScene extends Scene {
 		// set the menus to the menu bar
 		menuBar.getMenus().addAll(menuGrid, menuEdit);
 	}
-	
+
 	public void setButtons(TilePane tilePaneButtons) {
 		tilePaneButtons.setPrefRows(1);
 		tilePaneButtons.setMaxHeight(200);
@@ -139,10 +150,10 @@ public class GridScene extends Scene {
 		buttonPlay.setOnAction(e -> {
 			if (context.playing) {
 				buttonPlay.setText("Start");
-				context.animationTimer.stop();
+//				context.animationTimer.stop();
 			} else {
 				buttonPlay.setText("Stop");
-				context.animationTimer.start();
+//				context.animationTimer.start();
 				context.blocked = 0;
 			}
 			context.playing = !context.playing;

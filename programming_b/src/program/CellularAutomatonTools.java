@@ -1,18 +1,15 @@
 package program;
 
 import algorithms.Algo;
-import algorithms.Grid;
 import core.Context;
-import core.Ticker;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.stage.Stage;
 
 public class CellularAutomatonTools extends Context {
 	private static final String TITLE = "Artificial Life";
-	private Grid grid;
 
-	public boolean playing = true;
+	public boolean playing = false;
 	public IntegerProperty speed = new SimpleIntegerProperty(3);
 	public int blocked;
 
@@ -23,23 +20,6 @@ public class CellularAutomatonTools extends Context {
 		windowWidth.set(1200); // 1200
 		windowHeight.set(900); // 800
 		tileSize.set(10);
-	}
-
-	private void setTicker() {
-		ticker = new Ticker() {
-			@Override
-			public void tick(int ticks) {
-				blocked -= ticks;
-				while (blocked <= 0) {
-					blocked -= ticks;
-					while (blocked <= 0) {
-//						grid.step();
-//						grid.render();
-						blocked += Math.ceil(Math.pow(10 - speed.get(), 2));
-					}
-				}
-			}
-		};
 	}
 
 	public static void main(String[] args) {
@@ -67,9 +47,6 @@ public class CellularAutomatonTools extends Context {
 	@Override
 	public void start(Stage stage) {
 		super.start(stage);
-
-		setTicker();
-		playing = false;
 
 		sceneMaster.showScreen("menu");
 	}
