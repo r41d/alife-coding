@@ -1,8 +1,11 @@
 package algorithms;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import core.Context;
 
 public class GameOfLife extends Grid {
+
 	// internal variables
 	private int[][] next;
 
@@ -53,4 +56,18 @@ public class GameOfLife extends Grid {
 			next[x][y] = 0;
 		}
 	}
+
+	public void render(Canvas canvas) {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		for (int x = 0; x < this.n; x++) {
+			for (int y = 0; y < this.m; y++) {
+				// change color
+				gc.setFill(Context.CELLS_BW[this.getCell(x, y)]);
+				// draw rect
+				gc.fillRect(x * this.context.tileSize.get(), y * this.context.tileSize.get(),
+						this.context.tileSize.get() - 1, this.context.tileSize.get() - 1);
+			}
+		}
+	}
+
 }

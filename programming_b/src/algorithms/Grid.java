@@ -6,9 +6,13 @@ package algorithms;
 import java.util.Arrays;
 import java.util.Random;
 
+import javafx.scene.canvas.Canvas;
 import core.Context;
 
 public abstract class Grid {
+
+	protected Context context;
+
 	protected static final Random rnd = new Random();
 
 	public int[][] cells;
@@ -18,6 +22,7 @@ public abstract class Grid {
 
 	public Grid(Context context) {
 		final int size = context.tileSize.get();
+		this.context = context;
 		n = context.gridWidth.get() / size;
 		m = context.gridHeight.get() / size;
 
@@ -112,4 +117,7 @@ public abstract class Grid {
 	}
 
 	public abstract void step();
+
+	public abstract void render(Canvas canvas);
+
 }

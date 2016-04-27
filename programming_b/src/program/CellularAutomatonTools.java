@@ -12,7 +12,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -20,7 +19,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class CellularAutomatonTools extends Context {
@@ -35,7 +33,6 @@ public class CellularAutomatonTools extends Context {
 	private boolean playing = true;
 	private IntegerProperty speed = new SimpleIntegerProperty(3);
 	private int blocked;
-	private Algo algo;
 
 	public CellularAutomatonTools() {
 		super(TITLE);
@@ -55,29 +52,12 @@ public class CellularAutomatonTools extends Context {
 					blocked -= ticks;
 					while (blocked <= 0) {
 						grid.step();
-						render();
+						grid.render(canvas);
 						blocked += Math.ceil(Math.pow(10 - speed.get(), 2));
 					}
 				}
 			}
 		};
-	}
-
-	private void render() {
-
-		Color colors[] = (this.algo != Algo.FOREST_FIRE) ? CELLS_BW : CELLS_FOREST;
-
-		// full rendering of the map
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		for (int x = 0; x < grid.n; x++) {
-			for (int y = 0; y < grid.m; y++) {
-				// change color
-				gc.setFill(colors[grid.getCell(x, y)]);
-
-				// draw rect
-				gc.fillRect(x * tileSize.get(), y * tileSize.get(), tileSize.get(), tileSize.get());
-			}
-		}
 	}
 
 	public static void main(String[] args) {
@@ -106,7 +86,6 @@ public class CellularAutomatonTools extends Context {
 	}
 
 	public void updateGrid(Algo algo) {
-		this.algo = algo;
 		switch (algo) {
 		case LANGTONS_ANT:
 			grid = new LangtonsAnt(this);
@@ -136,22 +115,22 @@ public class CellularAutomatonTools extends Context {
 
 		empty.setOnAction(e -> {
 			grid.emptyGrid();
-			render();
+			grid.render(canvas);
 		});
 
 		corner.setOnAction(e -> {
 			grid.cornerGrid();
-			render();
+			grid.render(canvas);
 		});
 
 		chess.setOnAction(e -> {
 			grid.chessGrid();
-			render();
+			grid.render(canvas);
 		});
 
 		rnd.setOnAction(e -> {
 			grid.randomGrid();
-			render();
+			grid.render(canvas);
 		});
 
 		// --- Menu Edit
@@ -164,16 +143,16 @@ public class CellularAutomatonTools extends Context {
 
 		invert.setOnAction(e -> {
 			grid.invertGrid();
-			render();
+			grid.render(canvas);
 
 		});
 		mirrorVertical.setOnAction(e -> {
 			grid.mirrorVerticalGrid();
-			render();
+			grid.render(canvas);
 		});
 		mirrorHorizontal.setOnAction(e -> {
 			grid.mirrorHorizontalGrid();
-			render();
+			grid.render(canvas);
 		});
 
 		// set the menus to the menu bar
@@ -215,7 +194,7 @@ public class CellularAutomatonTools extends Context {
 
 		buttonStep.setOnAction(e -> {
 			grid.step();
-			render();
+			grid.render(canvas);
 			if (playing) {
 				buttonPlay.fire();
 			}
@@ -236,7 +215,7 @@ public class CellularAutomatonTools extends Context {
 
 		setTicker();
 		playing = false;
-		render();
+		grid.render(canvas);
 
 		sceneMaster.showScreen("menu");
 		scene.getRoot().setVisible(true);

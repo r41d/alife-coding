@@ -1,5 +1,7 @@
 package algorithms;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import core.Context;
 
 public class LangtonsAnt extends Grid {
@@ -35,7 +37,7 @@ public class LangtonsAnt extends Grid {
 		cells[x][y] = 1 - cells[x][y];
 		// MOVE
 		switch (this.dir) {
-		case 0: //north
+		case 0: // north
 			this.y -= 1;
 			break;
 		case 1: // east
@@ -48,6 +50,20 @@ public class LangtonsAnt extends Grid {
 			this.x -= 1;
 			break;
 		}
+	}
+
+	public void render(Canvas canvas) {
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		for (int x = 0; x < this.n; x++) {
+			for (int y = 0; y < this.m; y++) {
+				// change color
+				gc.setFill(Context.CELLS_BW[this.getCell(x, y)]);
+				// draw rect
+				gc.fillRect(x * this.context.tileSize.get(), y * this.context.tileSize.get(),
+						this.context.tileSize.get() - 1, this.context.tileSize.get() - 1);
+			}
+		}
+		// TODO: Draw the Ant
 	}
 
 }
