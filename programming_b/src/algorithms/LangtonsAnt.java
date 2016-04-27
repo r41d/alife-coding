@@ -1,8 +1,8 @@
 package algorithms;
 
+import core.Context;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import core.Context;
 
 public class LangtonsAnt extends Grid {
 	

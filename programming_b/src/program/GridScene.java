@@ -5,7 +5,6 @@ import algorithms.ForestFire;
 import algorithms.GameOfLife;
 import algorithms.Grid;
 import algorithms.LangtonsAnt;
-import core.Ticker;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -150,15 +149,14 @@ public class GridScene extends Scene {
 		buttonPlay.setOnAction(e -> {
 			if (context.playing) {
 				buttonPlay.setText("Start");
-//				context.animationTimer.stop();
+				context.animationTimer.stop();
 			} else {
 				buttonPlay.setText("Stop");
-//				context.animationTimer.start();
+				context.animationTimer.start();
 				context.blocked = 0;
 			}
 			context.playing = !context.playing;
 		});
-		buttonPlay.fire();
 
 		buttonStep.setOnAction(e -> {
 			grid.step();

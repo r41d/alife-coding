@@ -1,6 +1,5 @@
 package core;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyStringProperty;

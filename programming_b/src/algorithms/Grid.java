@@ -6,8 +6,8 @@ package algorithms;
 import java.util.Arrays;
 import java.util.Random;
 
-import javafx.scene.canvas.Canvas;
 import core.Context;
+import javafx.scene.canvas.Canvas;
 
 public abstract class Grid {
 

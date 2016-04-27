@@ -2,8 +2,10 @@ package program;
 
 import algorithms.Algo;
 import core.Context;
+import javafx.animation.AnimationTimer;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class CellularAutomatonTools extends Context {
@@ -12,6 +14,11 @@ public class CellularAutomatonTools extends Context {
 	public boolean playing = false;
 	public IntegerProperty speed = new SimpleIntegerProperty(3);
 	public int blocked;
+	
+	public AnimationTimer animationTimer;
+	private int passedTicks = 0;
+	private double lastNanoTime = System.nanoTime();
+	private double time = 0;
 
 	public CellularAutomatonTools() {
 		super(TITLE);
@@ -20,6 +27,8 @@ public class CellularAutomatonTools extends Context {
 		windowWidth.set(1200); // 1200
 		windowHeight.set(900); // 800
 		tileSize.set(10);
+		
+		initAnimationTimer();
 	}
 
 	public static void main(String[] args) {
@@ -40,14 +49,29 @@ public class CellularAutomatonTools extends Context {
 		sceneMaster.addScreen("lantons ant", new GridScene(this, Algo.LANGTONS_ANT));
 	}
 
-	public void updateGrid(Algo algo) {
-
-	}
-
 	@Override
 	public void start(Stage stage) {
 		super.start(stage);
 
 		sceneMaster.showScreen("menu");
+	}
+	
+	private void initAnimationTimer() {
+		final double fps = 60.0;
+		animationTimer = new AnimationTimer() {
+			@Override
+			public void handle(long currentNanoTime) {
+				// calculate time since last update.
+				time += (currentNanoTime - lastNanoTime) / 1000000000.0;
+				lastNanoTime = currentNanoTime;
+				passedTicks = (int) Math.floor(time * fps);
+				time -= passedTicks / fps;
+
+				Scene scene = sceneMaster.getScreen();
+				if (scene instanceof GridScene) {
+					((GridScene) scene).tick(passedTicks >= 1 ? 1 : 0);
+				}
+			}
+		};
 	}
 }

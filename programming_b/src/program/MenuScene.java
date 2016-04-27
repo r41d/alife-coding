@@ -2,7 +2,6 @@ package program;
 
 import java.util.ArrayList;
 
-import algorithms.Algo;
 import core.Context;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,6 +26,7 @@ public class MenuScene extends Scene {
 		this.context = context;
 		init_scene();
 	}
+	
 
 	private void init_scene() {
 		background = new BorderPane();
