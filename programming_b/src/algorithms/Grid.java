@@ -25,9 +25,13 @@ public abstract class Grid {
 		final int size = context.tileSize.get();
 		this.context = context;
 		this.canvas = canvas;
-		
-		n = context.gridWidth.get() / size;
-		m = context.gridHeight.get() / size;
+
+		// n = context.gridWidth.get() / size;
+		// m = context.gridHeight.get() / size;
+
+		// task
+		n = 101;
+		m = 82;
 
 		// init properties
 		this.cells = new int[n][m];
@@ -120,6 +124,6 @@ public abstract class Grid {
 	}
 
 	public abstract void step();
-	
+
 	public abstract void render();
 }

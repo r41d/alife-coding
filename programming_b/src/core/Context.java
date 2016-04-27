@@ -34,7 +34,7 @@ public abstract class Context extends Application {
 
 	// instances from the master classes
 	protected final SceneMaster sceneMaster;
-	protected AnimationTimer animationTimer;
+	public AnimationTimer animationTimer;
 	protected Ticker ticker;
 
 	private int passedTicks = 0;
@@ -87,7 +87,7 @@ public abstract class Context extends Application {
 	private void initStage() {
 		// stage settings
 		stage.setTitle(title.get());
-		stage.setResizable(false);
+		stage.setResizable(true);
 
 		// event handling
 		stage.setOnCloseRequest(event -> {
