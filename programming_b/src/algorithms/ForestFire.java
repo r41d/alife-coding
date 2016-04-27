@@ -2,6 +2,7 @@ package algorithms;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Menu;
 import core.Context;
 
 public class ForestFire extends Grid {
@@ -97,6 +98,11 @@ public class ForestFire extends Grid {
 						this.context.tileSize.get() - 1, this.context.tileSize.get() - 1);
 			}
 		}
+	}
+
+	@Override
+	public void genMenu(Menu menu) {
+		// don't generate anything here...
 	}
 
 }

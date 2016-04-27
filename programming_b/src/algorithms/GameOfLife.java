@@ -2,6 +2,8 @@ package algorithms;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import core.Context;
 
 public class GameOfLife extends Grid {
@@ -66,6 +68,114 @@ public class GameOfLife extends Grid {
 				// draw rect
 				gc.fillRect(x * this.context.tileSize.get(), y * this.context.tileSize.get(),
 						this.context.tileSize.get() - 1, this.context.tileSize.get() - 1);
+			}
+		}
+	}
+
+	@Override
+	public void genMenu(Menu menu) {
+		/*
+		 * Make the user choose the initial pattern to start with, from the
+		 * following list of 5 possibilities: blinker, glider, r-pentomino,
+		 * Gosper’s Glider Gun, and a pattern (class 3 or 4) of your own choice.
+		 * Write the total number of cells living for each time step into a file
+		 * (one ASCII value per line).
+		 */
+
+		MenuItem blinker = new MenuItem("Blinker");
+		MenuItem glider = new MenuItem("Glider");
+		MenuItem rpentomino = new MenuItem("r-pentomino");
+		MenuItem gosper = new MenuItem("Gosper's Glider Gun");
+		MenuItem inf1 = new MenuItem("Infinite 1");
+		// MenuItem load = new MenuItem("Load grid from file");
+		// load.setDisable(true);
+
+		menu.getItems().addAll(blinker, glider, rpentomino, inf1/* , load */);
+
+		blinker.setOnAction(e -> {
+			blinker();
+			render();
+		});
+
+		glider.setOnAction(e -> {
+			glider();
+			render();
+		});
+
+		rpentomino.setOnAction(e -> {
+			rpentomino();
+			render();
+		});
+
+		gosper.setOnAction(e -> {
+			gosper();
+			render();
+		});
+
+		inf1.setOnAction(e -> {
+			inf1();
+			render();
+		});
+
+	}
+
+	private void blinker() {
+		for (int i = -1; i <= 1; i++) {
+			cells[n][m + i] = 1;
+		}
+	}
+
+	private void glider() {
+		cells[5][5] = 1;
+		cells[6][6] = 1;
+		for (int i = 4; i <= 6; i++) {
+			cells[i][7] = 1;
+		}
+	}
+
+	private void rpentomino() {
+		cells[n-1][m] = 1;
+		cells[n+1][m+1] = 1;
+		for (int i = -1; i <= 1; i++) {
+			cells[n][m+i] = 1;
+		}
+	}
+
+	private void gosper() {
+		// @formatter:off
+		String gun[] = {
+						"........................O...........",
+						"......................O.O...........",
+						"............OO......OO............OO",
+						"...........O...O....OO............OO",
+						"OO........O.....O...OO..............",
+						"OO........O...O.OO....O.O...........",
+						"..........O.....O.......O...........",
+						"...........O...O....................",
+						"............OO......................"
+						} ;
+		// @formatter:on
+		pattern2cells(gun, 10, 10);
+	}
+
+	private void inf1() {
+		// @formatter:off
+		String inf1[] = {
+						"......O.",
+						"....O.OO",
+						"....O.O.",
+						"....O...",
+						"..O.....",
+						"O.O....."
+						} ;
+		// @formatter:on
+		pattern2cells(inf1, n, m);
+	}
+
+	private void pattern2cells(String[] gun, int xoffset, int yoffset) {
+		for (int line = 0; line < gun.length; line++) {
+			for (int cell = 0; cell < gun[line].length(); cell++) {
+				cells[xoffset+cell][yoffset+line] = (gun[line].charAt(cell) == 'O') ? 1 : 0;
 			}
 		}
 	}
