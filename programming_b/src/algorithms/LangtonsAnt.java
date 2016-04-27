@@ -3,9 +3,11 @@ package algorithms;
 import core.Context;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import core.Context;
 
 public class LangtonsAnt extends Grid {
-	
 
 	protected int x;
 	protected int y;
@@ -67,5 +69,52 @@ public class LangtonsAnt extends Grid {
 		// TODO: Draw the Ant
 	}
 
+	@Override
+	public void genMenu(Menu menu) {
+		/*
+		 * Make the user choose the initial configuration of the grid from the
+		 * following list of 5 possibilities: all white, all black, checker
+		 * board, horizontal stripes, random setting and make the user chose the
+		 * starting position and orientation for the ant. Write the total number
+		 * of cells living for each time step into a file (one ASCII value per
+		 * line).
+		 */
+
+		MenuItem empty = new MenuItem("White grid");
+		MenuItem corner = new MenuItem("Black grid");
+		MenuItem chess = new MenuItem("Chess grid");
+		MenuItem horizontal = new MenuItem("Horizontal stripes");
+		MenuItem rnd = new MenuItem("Random grid");
+		// MenuItem load = new MenuItem("Load grid from file");
+		// load.setDisable(true);
+
+		menu.getItems().addAll(empty, corner, chess, rnd/* , load */);
+
+		empty.setOnAction(e -> {
+			emptyGrid();
+			render();
+		});
+
+		corner.setOnAction(e -> {
+			cornerGrid();
+			render();
+		});
+
+		chess.setOnAction(e -> {
+			chessGrid();
+			render();
+		});
+
+		horizontal.setOnAction(e -> {
+			horizontalLines();
+			render();
+		});
+
+		rnd.setOnAction(e -> {
+			randomGrid();
+			render();
+		});
+
+	}
 
 }

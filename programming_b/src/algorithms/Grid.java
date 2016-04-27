@@ -6,6 +6,8 @@ package algorithms;
 import java.util.Arrays;
 import java.util.Random;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Menu;
 import core.Context;
 import javafx.scene.canvas.Canvas;
 
@@ -85,6 +87,15 @@ public abstract class Grid {
 		}
 	}
 
+	// function which sets the grid to horizontal lines
+	public void horizontalLines() {
+		for (int x = 0; x < cells.length; x++) {
+			for (int y = 0; y < cells[x].length; y++) {
+				cells[x][y] = (y%2==0) ? 1 : 0;
+			}
+		}
+	}
+
 	// function which sets each cell independently random from each other
 	// thereby the old cell values are erased
 	public void randomGrid() {
@@ -94,6 +105,7 @@ public abstract class Grid {
 			}
 		}
 	}
+
 
 	public void invertGrid() {
 		for (int x = 0; x < cells.length; x++) {
@@ -123,7 +135,12 @@ public abstract class Grid {
 		}
 	}
 
+
 	public abstract void step();
 
 	public abstract void render();
+
+	public abstract void genMenu(Menu menu);
+
+
 }
