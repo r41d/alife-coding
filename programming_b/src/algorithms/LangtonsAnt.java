@@ -5,13 +5,14 @@ import javafx.scene.canvas.GraphicsContext;
 import core.Context;
 
 public class LangtonsAnt extends Grid {
+	
 
 	protected int x;
 	protected int y;
 	protected int dir; // 0=north 1=east 2=south 3=west
 
-	public LangtonsAnt(Context context) {
-		super(context);
+	public LangtonsAnt(Context context, Canvas canvas) {
+		super(context, canvas);
 		this.x = n / 2;
 		this.y = m / 2;
 		this.dir = 0;
@@ -52,7 +53,7 @@ public class LangtonsAnt extends Grid {
 		}
 	}
 
-	public void render(Canvas canvas) {
+	public void render() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		for (int x = 0; x < this.n; x++) {
 			for (int y = 0; y < this.m; y++) {
@@ -65,5 +66,6 @@ public class LangtonsAnt extends Grid {
 		}
 		// TODO: Draw the Ant
 	}
+
 
 }

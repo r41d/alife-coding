@@ -9,8 +9,8 @@ public class GameOfLife extends Grid {
 	// internal variables
 	private int[][] next;
 
-	public GameOfLife(Context context) {
-		super(context);
+	public GameOfLife(Context context, Canvas canvas) {
+		super(context, canvas);
 
 		this.next = new int[n][m];
 	}
@@ -57,7 +57,7 @@ public class GameOfLife extends Grid {
 		}
 	}
 
-	public void render(Canvas canvas) {
+	public void render() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		for (int x = 0; x < this.n; x++) {
 			for (int y = 0; y < this.m; y++) {

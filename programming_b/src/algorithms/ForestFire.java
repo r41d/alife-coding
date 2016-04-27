@@ -1,25 +1,18 @@
-/**
- * 
- */
 package algorithms;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import core.Context;
 
-/**
- * @author danny
- * 
- *
- */
 public class ForestFire extends Grid {
 	// internal variables
 	private int[][] next;
 	private double igniteTree = 0.002; // probability f -- tree to fire
 	private double growTree = 0.05; // probability p -- ash to tree
+	private double induceTree = 0.05; // probability q
 
-	public ForestFire(Context context) {
-		super(context);
+	public ForestFire(Context context, Canvas canvas) {
+		super(context, canvas);
 
 		this.next = new int[n][m];
 	}
@@ -45,8 +38,24 @@ public class ForestFire extends Grid {
 		case 0:
 			next[x][y] = rnd.nextDouble() < growTree ? 1 : 0;
 
-			// System.out.println(rnd.nextDouble() < growTree ? 1 : 0 + ": " +
-			// rnd.nextDouble() + " - " + growTree);
+			boolean hasTreeNeighbor = false;
+
+			for (int a = -1; a <= 1; a++) {
+				for (int b = -1; b <= 1; b++) {
+					if (a == 0 && b == 0) {
+						continue;
+					}
+
+					if (getCell(x + a, y + b) == 2) {
+						hasTreeNeighbor = true;
+					}
+				}
+			}
+
+			if (hasTreeNeighbor && rnd.nextDouble() < induceTree) {
+				next[x][y] = 1;
+			}
+
 			break;
 
 		//
@@ -76,8 +85,9 @@ public class ForestFire extends Grid {
 		}
 	}
 
-	public void render(Canvas canvas) {
+	public void render() {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
+
 		for (int x = 0; x < this.n; x++) {
 			for (int y = 0; y < this.m; y++) {
 				// change color

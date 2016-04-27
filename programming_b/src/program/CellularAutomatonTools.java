@@ -52,7 +52,7 @@ public class CellularAutomatonTools extends Context {
 					blocked -= ticks;
 					while (blocked <= 0) {
 						grid.step();
-						grid.render(canvas);
+						grid.render();
 						blocked += Math.ceil(Math.pow(10 - speed.get(), 2));
 					}
 				}
@@ -89,13 +89,13 @@ public class CellularAutomatonTools extends Context {
 	public void updateGrid(Algo algo) {
 		switch (algo) {
 		case LANGTONS_ANT:
-			grid = new LangtonsAnt(this);
+			grid = new LangtonsAnt(this, canvas);
 			break;
 		case GAME_OF_LIFE:
-			grid = new GameOfLife(this);
+			grid = new GameOfLife(this, canvas);
 			break;
 		case FOREST_FIRE:
-			grid = new ForestFire(this);
+			grid = new ForestFire(this, canvas);
 			break;
 		default:
 			break;
@@ -116,22 +116,22 @@ public class CellularAutomatonTools extends Context {
 
 		empty.setOnAction(e -> {
 			grid.emptyGrid();
-			grid.render(canvas);
+			grid.render();
 		});
 
 		corner.setOnAction(e -> {
 			grid.cornerGrid();
-			grid.render(canvas);
+			grid.render();
 		});
 
 		chess.setOnAction(e -> {
 			grid.chessGrid();
-			grid.render(canvas);
+			grid.render();
 		});
-
+		
 		rnd.setOnAction(e -> {
 			grid.randomGrid();
-			grid.render(canvas);
+			grid.render();
 		});
 
 		// --- Menu Edit
@@ -144,16 +144,16 @@ public class CellularAutomatonTools extends Context {
 
 		invert.setOnAction(e -> {
 			grid.invertGrid();
-			grid.render(canvas);
+			grid.render();
 
 		});
 		mirrorVertical.setOnAction(e -> {
 			grid.mirrorVerticalGrid();
-			grid.render(canvas);
+			grid.render();
 		});
 		mirrorHorizontal.setOnAction(e -> {
 			grid.mirrorHorizontalGrid();
-			grid.render(canvas);
+			grid.render();
 		});
 
 		// set the menus to the menu bar
@@ -195,7 +195,7 @@ public class CellularAutomatonTools extends Context {
 
 		buttonStep.setOnAction(e -> {
 			grid.step();
-			grid.render(canvas);
+			grid.render();
 			if (playing) {
 				buttonPlay.fire();
 			}
@@ -216,7 +216,7 @@ public class CellularAutomatonTools extends Context {
 
 		setTicker();
 		playing = false;
-		grid.render(canvas);
+		grid.render();
 
 		sceneMaster.showScreen("menu");
 		scene.getRoot().setVisible(true);

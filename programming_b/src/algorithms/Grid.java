@@ -12,6 +12,7 @@ import core.Context;
 public abstract class Grid {
 
 	protected Context context;
+	protected Canvas canvas;
 
 	protected static final Random rnd = new Random();
 
@@ -20,9 +21,11 @@ public abstract class Grid {
 	// parameter of the array length
 	public final int n, m;
 
-	public Grid(Context context) {
+	public Grid(Context context, Canvas canvas) {
 		final int size = context.tileSize.get();
 		this.context = context;
+		this.canvas = canvas;
+		
 		n = context.gridWidth.get() / size;
 		m = context.gridHeight.get() / size;
 
@@ -117,7 +120,6 @@ public abstract class Grid {
 	}
 
 	public abstract void step();
-
-	public abstract void render(Canvas canvas);
-
+	
+	public abstract void render();
 }
