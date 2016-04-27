@@ -111,7 +111,7 @@ public class CellularAutomatonTools extends Context {
 		MenuItem chess = new MenuItem("Chess grid");
 		MenuItem rnd = new MenuItem("Random grid");
 		MenuItem load = new MenuItem("Load grid from file");
-		load.setDisable(true);
+		load.setVisible(false);
 		menuGrid.getItems().addAll(empty, corner, chess, rnd, load);
 
 		empty.setOnAction(e -> {
