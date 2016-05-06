@@ -5,19 +5,17 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import core.Context;
 
 public class LangtonsAnt extends Grid {
 
 	protected int x;
 	protected int y;
 	protected int dir; // 0=north 1=east 2=south 3=west
+	protected int living;
 
 	public LangtonsAnt(Context context, Canvas canvas) {
 		super(context, canvas);
-		this.x = n / 2;
-		this.y = m / 2;
-		this.dir = 0;
+		this.recentre();
 	}
 
 	@Override
@@ -53,6 +51,12 @@ public class LangtonsAnt extends Grid {
 			this.x -= 1;
 			break;
 		}
+		// boundary check
+		if(this.x < 0) this.x = 0;
+		if(this.y < 0) this.y = 0;
+		if(this.x >= n) this.x = n-1;
+		if(this.y >= m) this.y = m-1;
+		living = countCells(1);
 	}
 
 	public void render() {
@@ -69,6 +73,12 @@ public class LangtonsAnt extends Grid {
 		// TODO: Draw the Ant
 	}
 
+	protected void recentre() {
+		this.x = n / 2;
+		this.y = m / 2;
+		this.dir = 0;
+	}
+
 	@Override
 	public void genMenu(Menu menu) {
 		/*
@@ -80,41 +90,56 @@ public class LangtonsAnt extends Grid {
 		 * line).
 		 */
 
-		MenuItem empty = new MenuItem("White grid");
-		MenuItem corner = new MenuItem("Black grid");
+		MenuItem white = new MenuItem("White grid");
+		MenuItem black = new MenuItem("Black grid");
 		MenuItem chess = new MenuItem("Chess grid");
 		MenuItem horizontal = new MenuItem("Horizontal stripes");
 		MenuItem rnd = new MenuItem("Random grid");
 		// MenuItem load = new MenuItem("Load grid from file");
 		// load.setDisable(true);
 
-		menu.getItems().addAll(empty, corner, chess, rnd/* , load */);
+		menu.getItems().addAll(white, black, chess, horizontal, rnd);
 
-		empty.setOnAction(e -> {
+		white.setOnAction(e -> {
 			emptyGrid();
+			living = countCells(1);
+			recentre();
 			render();
 		});
 
-		corner.setOnAction(e -> {
-			cornerGrid();
+		black.setOnAction(e -> {
+			fullGrid();
+			living = countCells(1);
+			recentre();
 			render();
 		});
 
 		chess.setOnAction(e -> {
 			chessGrid();
+			living = countCells(1);
+			recentre();
 			render();
 		});
 
 		horizontal.setOnAction(e -> {
 			horizontalLines();
+			living = countCells(1);
+			recentre();
 			render();
 		});
 
 		rnd.setOnAction(e -> {
 			randomGrid();
+			living = countCells(1);
+			recentre();
 			render();
 		});
 
+	}
+
+	@Override
+	public String lineString() {
+		return ""+living;
 	}
 
 }

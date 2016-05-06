@@ -22,6 +22,9 @@ public abstract class Context extends Application {
 			(Color) Paint.valueOf("#5AA664"), // green
 			(Color) Paint.valueOf("#A6645A") }; // red
 
+	public final static int N = 101;
+	public final static int M = 82;
+
 	// properties
 	public final IntegerProperty windowWidth = new SimpleIntegerProperty();
 	public final IntegerProperty windowHeight = new SimpleIntegerProperty();

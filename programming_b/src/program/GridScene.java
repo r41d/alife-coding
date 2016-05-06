@@ -1,5 +1,10 @@
 package program;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
+import core.Context;
 import algorithms.Algo;
 import algorithms.ForestFire;
 import algorithms.GameOfLife;
@@ -19,19 +24,16 @@ import javafx.scene.layout.VBox;
 public class GridScene extends Scene {
 	private CellularAutomatonTools context;
 	private Grid grid;
-	private Algo algo;
-
 	private MenuBar bar;
 	private Canvas canvas;
 	private TilePane buttons;
+	private PrintWriter writer;
 
 	public GridScene(CellularAutomatonTools context, Algo algo) {
 		super(new VBox(), context.windowWidth.get(), context.windowHeight.get());
 
 		this.context = context;
-		this.algo = algo;
-
-		canvas = new Canvas(101 * context.tileSize.get(), 82 * context.tileSize.get());
+		canvas = new Canvas(Context.N * context.tileSize.get(), Context.M * context.tileSize.get());
 		switch (algo) {
 		case LANGTONS_ANT:
 			grid = new LangtonsAnt(context, canvas);
@@ -54,8 +56,14 @@ public class GridScene extends Scene {
 		VBox vboxMenu = (VBox) this.getRoot();
 		vboxMenu.setAlignment(Pos.TOP_CENTER);
 		vboxMenu.getChildren().addAll(bar, canvas, buttons);
+
+		try {
+			writer = new PrintWriter("log.txt", "ASCII");
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void tick(int ticks) {
 		context.blocked -= ticks;
 		while (context.blocked <= 0) {
@@ -64,6 +72,8 @@ public class GridScene extends Scene {
 				grid.step();
 				grid.render();
 				context.blocked += Math.ceil(Math.pow(10 - context.speed.get(), 2));
+				writer.println(grid.lineString());
+				writer.flush();
 			}
 		}
 	}
@@ -72,33 +82,7 @@ public class GridScene extends Scene {
 		// --- Menu Start
 
 		Menu menuGrid = new Menu("Grid");
-		MenuItem empty = new MenuItem("Empty grid");
-		MenuItem corner = new MenuItem("Objects on grid");
-		MenuItem chess = new MenuItem("Chess grid");
-		MenuItem rnd = new MenuItem("Random grid");
-		MenuItem load = new MenuItem("Load grid from file");
-		load.setVisible(false);
-		menuGrid.getItems().addAll(empty, corner, chess, rnd, load);
-
-		empty.setOnAction(e -> {
-			grid.emptyGrid();
-			grid.render();
-		});
-
-		corner.setOnAction(e -> {
-			grid.cornerGrid();
-			grid.render();
-		});
-
-		chess.setOnAction(e -> {
-			grid.chessGrid();
-			grid.render();
-		});
-
-		rnd.setOnAction(e -> {
-			grid.randomGrid();
-			grid.render();
-		});
+		grid.genMenu(menuGrid);
 
 		// --- Menu Edit
 

@@ -5,12 +5,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import core.Context;
 
 public class GameOfLife extends Grid {
 
 	// internal variables
 	private int[][] next;
+	protected int living;
 
 	public GameOfLife(Context context, Canvas canvas) {
 		super(context, canvas);
@@ -34,6 +34,7 @@ public class GameOfLife extends Grid {
 				cells[i][j] = next[i][j];
 			}
 		}
+		living = countCells(1);
 	}
 
 	private void checkNeighborhood(int x, int y) {
@@ -91,42 +92,49 @@ public class GameOfLife extends Grid {
 		// MenuItem load = new MenuItem("Load grid from file");
 		// load.setDisable(true);
 
-		menu.getItems().addAll(blinker, glider, rpentomino, inf1/* , load */);
+		menu.getItems().addAll(blinker, glider, rpentomino, gosper, inf1);
 
 		blinker.setOnAction(e -> {
 			blinker();
+			living = countCells(1);
 			render();
 		});
 
 		glider.setOnAction(e -> {
 			glider();
+			living = countCells(1);
 			render();
 		});
 
 		rpentomino.setOnAction(e -> {
 			rpentomino();
+			living = countCells(1);
 			render();
 		});
 
 		gosper.setOnAction(e -> {
 			gosper();
+			living = countCells(1);
 			render();
 		});
 
 		inf1.setOnAction(e -> {
 			inf1();
+			living = countCells(1);
 			render();
 		});
 
 	}
 
 	private void blinker() {
+		emptyGrid();
 		for (int i = -1; i <= 1; i++) {
-			cells[n][m + i] = 1;
+			cells[n/2][m/2 + i] = 1;
 		}
 	}
 
 	private void glider() {
+		emptyGrid();
 		cells[5][5] = 1;
 		cells[6][6] = 1;
 		for (int i = 4; i <= 6; i++) {
@@ -135,14 +143,16 @@ public class GameOfLife extends Grid {
 	}
 
 	private void rpentomino() {
-		cells[n-1][m] = 1;
-		cells[n+1][m+1] = 1;
+		emptyGrid();
+		cells[n/2-1][m/2] = 1;
+		cells[n/2+1][m/2-1] = 1;
 		for (int i = -1; i <= 1; i++) {
-			cells[n][m+i] = 1;
+			cells[n/2][m/2+i] = 1;
 		}
 	}
 
 	private void gosper() {
+		emptyGrid();
 		// @formatter:off
 		String gun[] = {
 						"........................O...........",
@@ -160,6 +170,7 @@ public class GameOfLife extends Grid {
 	}
 
 	private void inf1() {
+		emptyGrid();
 		// @formatter:off
 		String inf1[] = {
 						"......O.",
@@ -170,7 +181,7 @@ public class GameOfLife extends Grid {
 						"O.O....."
 						} ;
 		// @formatter:on
-		pattern2cells(inf1, n, m);
+		pattern2cells(inf1, n/2, m/2);
 	}
 
 	private void pattern2cells(String[] gun, int xoffset, int yoffset) {
@@ -179,6 +190,11 @@ public class GameOfLife extends Grid {
 				cells[xoffset+cell][yoffset+line] = (gun[line].charAt(cell) == 'O') ? 1 : 0;
 			}
 		}
+	}
+
+	@Override
+	public String lineString() {
+		return ""+living;
 	}
 
 }

@@ -78,17 +78,4 @@ public class SceneMaster {
 		scenes.remove(name);
 	}
 
-	public void tick(int ticks) {
-		if (ticking && scene != null) {
-
-		}
-	}
-
-	/**
-	 * Renders the current screen.
-	 */
-	public void render() {
-		if (scene != null) {
-		}
-	}
 }

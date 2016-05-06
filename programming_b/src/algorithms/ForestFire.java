@@ -4,7 +4,6 @@ import core.Context;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Menu;
-import core.Context;
 
 public class ForestFire extends Grid {
 	// internal variables
@@ -12,6 +11,10 @@ public class ForestFire extends Grid {
 	private double igniteTree = 0.002; // probability f -- tree to fire
 	private double growTree = 0.05; // probability p -- ash to tree
 	private double induceTree = 0.05; // probability q
+
+	protected int ashes;
+	protected int trees;
+	protected int fires;
 
 	public ForestFire(Context context, Canvas canvas) {
 		super(context, canvas);
@@ -32,6 +35,9 @@ public class ForestFire extends Grid {
 				cells[i][j] = next[i][j];
 			}
 		}
+		ashes = countCells(0);
+		trees = countCells(1);
+		fires = countCells(2);
 	}
 
 	private void updateCell(int x, int y) {
@@ -104,6 +110,11 @@ public class ForestFire extends Grid {
 	@Override
 	public void genMenu(Menu menu) {
 		// don't generate anything here...
+	}
+
+	@Override
+	public String lineString() {
+		return ashes + " " + trees + " " + fires;
 	}
 
 }

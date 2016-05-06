@@ -14,7 +14,7 @@ public class CellularAutomatonTools extends Context {
 	public boolean playing = false;
 	public IntegerProperty speed = new SimpleIntegerProperty(3);
 	public int blocked;
-	
+
 	public AnimationTimer animationTimer;
 	private int passedTicks = 0;
 	private double lastNanoTime = System.nanoTime();
@@ -27,7 +27,7 @@ public class CellularAutomatonTools extends Context {
 		windowWidth.set(1200); // 1200
 		windowHeight.set(900); // 800
 		tileSize.set(10);
-		
+
 		initAnimationTimer();
 	}
 
@@ -55,7 +55,12 @@ public class CellularAutomatonTools extends Context {
 
 		sceneMaster.showScreen("menu");
 	}
-	
+
+	@Override
+	public void stop() {
+		super.stop();
+	}
+
 	private void initAnimationTimer() {
 		final double fps = 60.0;
 		animationTimer = new AnimationTimer() {
