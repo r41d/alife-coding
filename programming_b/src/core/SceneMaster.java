@@ -13,7 +13,6 @@ public class SceneMaster {
 	// game state
 	private HashMap<String, Scene> scenes = new HashMap<>();
 	private Scene scene;
-	private boolean ticking = true;
 
 	public SceneMaster(Context context) {
 		this.context = context;
