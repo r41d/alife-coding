@@ -45,11 +45,17 @@ public abstract class Grid {
 	}
 
 	public int getCell(int x, int y) {
-		if (x < 0 || x >= n)
-			return 0;
-
-		if (y < 0 || y >= m)
-			return 0;
+		if (x < 0)
+			x += n;
+		
+		if (x >= n)
+			x -= n;
+		
+		if (y < 0)
+			y += m;
+		
+		if (y >= m)
+			y -= m;
 
 		return cells[x][y];
 	}
