@@ -34,8 +34,15 @@ if __name__ == '__main__':
 	x[0] = 1000.0 # prey
 	y[0] =  500.0 # predator
 
+	# Testing
 	a, b, e, g = 0.03,   0,     0,   -0.0001
 	c, d, f, h = 0,     -0.03,  0,    0.00005
+
+	# Oscillation
+	# a,b,e = 0.7, -3, 0.0000001
+	# g = 0 # 0.000001
+	# c,d,f = 0.35, -2, 0.00001
+	# h = 0 # -0.000001
 
 	for i in range(ITERATIONS):
 		step(i, a,b,c,d,e,f,g,h)
