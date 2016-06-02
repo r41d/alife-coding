@@ -33,7 +33,6 @@ ANGLES = []
 for idx in range(len(VECS)):
 	for idx2 in range(idx):
 		ANGLES.append(angle(VECS[idx], VECS[idx2]))
-print "NaN:", len(filter(isnan, ANGLES)) # very rarely a NaN value may occur
-ANGLES = [a for a in ANGLES if not isnan(a)] # throw them out
+ANGLES = [a for a in ANGLES if not isnan(a)] # VERY rarely NaN values occured during testing
 averageAngle = rad2deg(average(ANGLES))
 print "average angle in degree:", averageAngle
