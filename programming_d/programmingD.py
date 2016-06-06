@@ -106,13 +106,13 @@ class ProgrammingD(EvolutionaryAlgorithm):
 		# The external selection steps keeps only the best one
 		# of the two individuals, and discards the other one.
 		sortPop = sorted(self.Population, key=lambda p: p.fitness, reverse=True)
+		print("Iteration %3d: Current candidates: %s and %s" % (self.ITERATIONS, str(sortPop[0]), str(sortPop[1])))
 		self.Population = [sortPop[0]]
 
 	def Finish(self):
 		# Implement a reasonable stopping criterion
 		indi = self.Population[0]
 		# if we are at this point, indi is the only individual at the moment
-		print("Iteration %3d: Current best candidate: %s" % (self.ITERATIONS, str(indi)))
 		if indi.fitness >= 1e6:
 			self.RUN = False
 			print("Found candicate with fitness over 1 million after %d iterations!" % self.ITERATIONS)
