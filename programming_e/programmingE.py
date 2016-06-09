@@ -153,7 +153,6 @@ class InverseTSP(EvolutionaryAlgorithm):
 	def pathlen(self, genome):
 		# genome is just a list of len(X)*2 pairs
 		# just calculate the length of the whole path
-		assert len(genome) == self.N*2
 		dist = 0
 		for idx in range(len(genome)-1):
 			dist += math.hypot((genome[idx][0]-genome[idx+1][0]), (genome[idx][1]-genome[idx+1][1]))
@@ -165,17 +164,14 @@ class InverseTSP(EvolutionaryAlgorithm):
 		for _ in range(self.P):
 			path = self.X + self.X # visit all points exactly twice
 			random.shuffle(path) # randomly shuffle the path
-			assert len(path) == self.N*2
 			indi = Individual(path) # new individual, TADA
 			self.Population.append(indi)
-		assert len(self.Population) == self.P
 		self.NewPopulation = []
 		self.LastBest = None
 		self.LastBestIter = 0
 
 	def ParentSelection(self):
 		# during this whole phase we have pop. size µ
-		assert len(self.Population) == self.µ
 		# Simple approach: All λ offspring is just a copy of the current best individual
 		self.BestIndividual = self.Population[0]
 
@@ -188,26 +184,19 @@ class InverseTSP(EvolutionaryAlgorithm):
 		for _ in range(self.λ):
 			# Simple approach: All λ offspring is just a copy of the current best individual
 			self.NewPopulation.append(copy.deepcopy(self.BestIndividual))
-		assert len(self.NewPopulation) == self.λ
 
 	def Mutation(self):
 		# during this whole phase we have pop. size P
 		# A simple approch seems to be to just switch 2 points randomly.
-		assert len(self.NewPopulation) == self.λ
 		for indi in self.NewPopulation:
-			assert len(indi.genome) == self.N*2
 			i = random.randrange(self.N*2)
 			j = random.randrange(self.N*2)
 			# simply swap two points :)
 			indi.genome[i], indi.genome[j] = indi.genome[j], indi.genome[i]
-			assert len(indi.genome) == self.N*2
-		assert len(self.NewPopulation) == self.λ
 
 	def FitnessEvaluation(self):
 		# during this whole phase we have pop. size P
-		assert len(self.Population)+len(self.NewPopulation) == self.P
 		self.Population = self.Population + self.NewPopulation
-		assert len(self.Population) == self.P
 		self.NewPopulation = []
 		for individual in self.Population:
 			individual.calc_fitness(self.pathlen)
@@ -215,9 +204,7 @@ class InverseTSP(EvolutionaryAlgorithm):
 	def ExternalSelection(self):
 		# starting with P, discard λ, keep µ, new pop. size = µ
 		sortPop = sorted(self.Population, key=lambda p: p.fitness, reverse=True) # sort population by fitness (=pathlen)
-		assert len(self.Population) == self.P
 		self.Population = sortPop[:self.µ]
-		assert len(self.Population) == self.µ
 
 	def Finish(self):
 		# The program has to output the fitness of the best individual, the mean
@@ -225,7 +212,6 @@ class InverseTSP(EvolutionaryAlgorithm):
 		# Gnuplot readable format.
 		# Depict and draw the development of these three values into a graph.
 		# Hand it in together with the other solutions.
-		assert len(self.Population) == self.µ
 		if not self.LastBest or self.LastBest.fitness < self.Population[0].fitness:
 			self.LastBest = self.Population[0]
 			self.LastBestIter = self.ITERATIONS
