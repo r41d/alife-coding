@@ -4,6 +4,7 @@
 import copy
 import random
 import csv
+import math
 import sys
 
 def screwthis(x):
@@ -134,38 +135,88 @@ class ProgrammingE(EvolutionaryAlgorithm):
 
 	# It is completely your choice, which variant of evolutionary algorithm to take.
 
-	def __init__(self, P, µ, λ):
+	def __init__(self, P, µ):
 		super().__init__()
-		self.P = P # population size
+		self.P = P # maximum population size
 		self.µ = µ
 		self.λ = P-µ
-
-	def Initialization(self):
 		# the N points X_n = (x_1, x_2)_n shall be read in from the text-file Positions PA-E.txt
 		# Allow a maximum of up to N = 150 points.
 		with open('Positions_PA-E.txt', 'r') as posfile:
 			posreader = csv.reader(posfile, delimiter='\t', skipinitialspace=True)
-			self.X = [pos[1:3] for pos in posreader][1:] # only store coordinates and skip first line
+			self.X = [list(map(int, pos[1:3])) for pos in posreader][1:] # only store coordinates and skip first line
 		self.X = self.X[:150] # truncate after 150 positions
 		self.N = len(self.X) # determine number of positions
 		print("X: %s" % str(self.X))
 		print("N: %d" % self.N)
-		sys.exit(42)
+
+	def pathlen(self, genome):
+		# genome is just a list of len(X)*2 pairs
+		# just calculate the length of the whole path
+		dist = 0
+		for idx in range(len(genome)-1):
+			dist += math.sqrt ( abs(genome[idx][0]-genome[idx+1][0])**2 + abs(genome[idx][1]-genome[idx+1][1])**2 )
+		return dist
+
+	def Initialization(self):
+		# gen. init. pop. P
+		self.Population = []
+		for _ in range(self.P):
+			path = self.X + self.X # visit all points exactly twice
+			random.shuffle(path) # randomly shuffle the path
+			indi = Individual(path) # new individual, TADA
+			self.Population.append(indi)
+		assert len(self.Population) == self.P
+		self.NewPopulation = []
+
+	#	sys.exit(42)
+
 
 	def ParentSelection(self):
-		pass
+		# during this whole phase we have pop. size µ
+		assert len(self.Population) == self.µ
+		# Simple approach: All λ offspring is just a copy of the current best individual
+		self.BestIndividual = self.Population[0]
 
 	def Inheritance(self):
-		pass
+		# starting with µ, generate λ, so that we have pop. size P afterwards
+		self.NewPopulation = []
+		# I don't know how inheritance from more that 1 parent should work,
+		# as we need to be sure to always have every point in out path exactly twice.
+		# Taking parts of paths from different parents would completely often destroy this property.
+		for _ in range(self.λ):
+			# Simple approach: All λ offspring is just a copy of the current best individual
+			self.NewPopulation.append(self.BestIndividual)
+		assert len(self.NewPopulation) == self.λ
 
 	def Mutation(self):
-		pass
+		# during this whole phase we have pop. size P
+		# A simple approch seems to be to just switch 2 points randomly.
+		assert len(self.NewPopulation) == self.λ
+		for indi in self.NewPopulation:
+			assert len(indi.genome) == self.N*2
+			i = random.randrange(self.N*2)
+			j = random.randrange(self.N*2)
+			# simply swap two points :)
+			indi.genome[i], indi.genome[j] = indi.genome[j], indi.genome[i]
+			assert len(indi.genome) == self.N*2
+		assert len(self.NewPopulation) == self.λ
 
 	def FitnessEvaluation(self):
-		pass
+		# during this whole phase we have pop. size P
+		assert len(self.Population)+len(self.NewPopulation) == self.P
+		self.Population = self.Population + self.NewPopulation
+		assert len(self.Population) == self.P
+		self.NewPopulation = []
+		for individual in self.Population:
+			individual.calc_fitness(self.pathlen)
 
 	def ExternalSelection(self):
-		pass
+		# starting with P, discard λ, keep µ, new pop. size = µ
+		sortPop = sorted(self.Population, key=lambda p: p.fitness, reverse=True) # sort population by fitness (=pathlen)
+		assert len(self.Population) == self.P
+		self.Population = sortPop[:self.µ]
+		assert len(self.Population) == self.µ
 
 	def Finish(self):
 		# The program has to output the fitness of the best individual, the mean
@@ -173,7 +224,7 @@ class ProgrammingE(EvolutionaryAlgorithm):
 		# Gnuplot readable format.
 		# Depict and draw the development of these three values into a graph.
 		# Hand it in together with the other solutions.
-		pass
+		print("Current best pathlen:", self.Population[0].fitness)
 
 
 
@@ -187,25 +238,33 @@ if __name__ == '__main__':
 		ev = ProgrammingD(f)
 		ev.perform()
 	else: # E
+		DEBUG = True
 		# The parameters P, μ and λ, are to be set by the user at runtime
 		# P = no. of individuals to have after INIT or INHERITANCE and during MUTATION and FITNESS EVAL
-		try:
-			P = int(input("P? "))
-		except ValueError:
-			screwthis("WTF?")
-		if P <= 1:
-			screwthis("P>1 please")
 		# µ = no. of individuals that survive the EXTERNAL SELECTION phase (the new parents for PAR. SEL. and INHERITANCE)
-		try:
-			µ = int(input("µ? "))
-		except ValueError:
-			screwthis("WTF?")
-		if µ <= 0:
-			screwthis("µ>0 please")
 		# λ = no. if individuals that are DISCARDED during EXT. SEL. and generated in INHERITANCE phase (offspring)
-		if P-µ <= 0:
-			screwthis("P>µ please")
-		print("λ=", λ)
+
+		if DEBUG:
+			P = 100
+			µ = 50
+		else:
+			try:
+				P = int(input("P? "))
+			except ValueError:
+				screwthis("WTF?")
+			if P <= 1:
+				screwthis("P>1 please")
+
+			try:
+				µ = int(input("µ? "))
+			except ValueError:
+				screwthis("WTF?")
+			if µ <= 0:
+				screwthis("µ>0 please")
+			if P-µ <= 0:
+				screwthis("P>µ please")
+			print("λ=", λ)
+
 		ev = ProgrammingE(P, µ)
 		ev.perform()
 
