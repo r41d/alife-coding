@@ -6,6 +6,10 @@ import random
 import csv
 import sys
 
+def screwthis(x):
+	print(x)
+	sys.exit(1)
+
 class Individual(object):
 	def __init__(self, genome):
 		self.genome = genome
@@ -121,15 +125,20 @@ class ProgrammingD(EvolutionaryAlgorithm):
 
 
 class ProgrammingE(EvolutionaryAlgorithm):
+
 	# Write a C, C++, Java or Python Programm, that implements an evolutionary
 	# algorithm to maximize the length of a route going twice through a given
-	# set of N points (cities) in 2-dimensions. Starting, and ending point are
-	# open to be determined by the algorithm; each point must be visited EXACTLY TWICE.
+	# set of N points (cities) in 2-dimensions.
+	# Starting, and ending point are OPEN TO BE DETERMINED by the algorithm;
+	# each point must be visited EXACTLY TWICE.
+
+	# It is completely your choice, which variant of evolutionary algorithm to take.
+
 	def __init__(self, P, µ, λ):
 		super().__init__()
 		self.P = P # population size
 		self.µ = µ
-		self.λ = λ
+		self.λ = P-µ
 
 	def Initialization(self):
 		# the N points X_n = (x_1, x_2)_n shall be read in from the text-file Positions PA-E.txt
@@ -159,6 +168,11 @@ class ProgrammingE(EvolutionaryAlgorithm):
 		pass
 
 	def Finish(self):
+		# The program has to output the fitness of the best individual, the mean
+		# fitness and the least fitness of the parents in every generation in a
+		# Gnuplot readable format.
+		# Depict and draw the development of these three values into a graph.
+		# Hand it in together with the other solutions.
 		pass
 
 
@@ -174,9 +188,25 @@ if __name__ == '__main__':
 		ev.perform()
 	else: # E
 		# The parameters P, μ and λ, are to be set by the user at runtime
-		P = 0
-		µ = 0
-		λ = 0
-		ev = ProgrammingE(P, µ, λ)
+		# P = no. of individuals to have after INIT or INHERITANCE and during MUTATION and FITNESS EVAL
+		try:
+			P = int(input("P? "))
+		except ValueError:
+			screwthis("WTF?")
+		if P <= 1:
+			screwthis("P>1 please")
+		# µ = no. of individuals that survive the EXTERNAL SELECTION phase (the new parents for PAR. SEL. and INHERITANCE)
+		try:
+			µ = int(input("µ? "))
+		except ValueError:
+			screwthis("WTF?")
+		if µ <= 0:
+			screwthis("µ>0 please")
+		# λ = no. if individuals that are DISCARDED during EXT. SEL. and generated in INHERITANCE phase (offspring)
+		if P-µ <= 0:
+			screwthis("P>µ please")
+		print("λ=", λ)
+		ev = ProgrammingE(P, µ)
 		ev.perform()
+
 
