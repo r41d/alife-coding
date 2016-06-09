@@ -6,6 +6,7 @@ import random
 import csv
 import math
 import sys
+import time
 
 def screwthis(x):
 	print(x)
@@ -125,7 +126,7 @@ class ProgrammingD(EvolutionaryAlgorithm):
 			print("Found candicate with fitness over 1 million after %d iterations!" % self.ITERATIONS)
 
 
-class InverseTSP(EvolutionaryAlgorithm):
+class ProgrammingE(EvolutionaryAlgorithm):
 
 	# Write a C, C++, Java or Python Programm, that implements an evolutionary
 	# algorithm to maximize the length of a route going twice through a given
@@ -140,6 +141,7 @@ class InverseTSP(EvolutionaryAlgorithm):
 		self.P = P # maximum population size
 		self.µ = µ
 		self.λ = P-µ
+		self.ITER_STOP = 1000
 		# the N points X_n = (x_1, x_2)_n shall be read in from the text-file Positions PA-E.txt
 		# Allow a maximum of up to N = 150 points.
 		with open('Positions_PA-E.txt', 'r') as posfile:
@@ -149,6 +151,7 @@ class InverseTSP(EvolutionaryAlgorithm):
 		self.N = len(self.X) # determine number of positions
 		print("X: %s" % str(self.X))
 		print("N: %d" % self.N)
+		time.sleep(1.5)
 
 	def pathlen(self, genome):
 		# genome is just a list of len(X)*2 pairs
@@ -173,17 +176,23 @@ class InverseTSP(EvolutionaryAlgorithm):
 	def ParentSelection(self):
 		# during this whole phase we have pop. size µ
 		# Simple approach: All λ offspring is just a copy of the current best individual
-		self.BestIndividual = self.Population[0]
+		self.BestIndividual = copy.deepcopy(self.Population[0])
+		# Better approach: Use the top
+		self.BestIndividuals = copy.deepcopy(self.Population[:self.λ]) # maximum of λ entries
 
 	def Inheritance(self):
 		# starting with µ, generate λ, so that we have pop. size P afterwards
 		self.NewPopulation = []
 		# I don't know how inheritance from more that 1 parent should work,
 		# as we need to be sure to always have every point in out path exactly twice.
-		# Taking parts of paths from different parents would completely often destroy this property.
-		for _ in range(self.λ):
+		# Taking parts of paths from different parents would often completely destroy this property.
+		self.NewPopulation.append(copy.deepcopy(self.BestIndividual)) # take current best in every case
+		#for _ in range(self.λ-1):
 			# Simple approach: All λ offspring is just a copy of the current best individual
-			self.NewPopulation.append(copy.deepcopy(self.BestIndividual))
+			#self.NewPopulation.append(copy.deepcopy(self.BestIndividual))
+		# Better approach: Sample from the top
+		self.NewPopulation.extend( random.sample(self.BestIndividuals, self.λ-1) )
+		## TODO: FIX possible ValueError
 
 	def Mutation(self):
 		# during this whole phase we have pop. size P
@@ -204,7 +213,7 @@ class InverseTSP(EvolutionaryAlgorithm):
 	def ExternalSelection(self):
 		# starting with P, discard λ, keep µ, new pop. size = µ
 		sortPop = sorted(self.Population, key=lambda p: p.fitness, reverse=True) # sort population by fitness (=pathlen)
-		self.Population = sortPop[:self.µ]
+		self.Population = sortPop[:self.µ] # only keep µ individuals
 
 	def Finish(self):
 		# The program has to output the fitness of the best individual, the mean
@@ -216,8 +225,8 @@ class InverseTSP(EvolutionaryAlgorithm):
 			self.LastBest = self.Population[0]
 			self.LastBestIter = self.ITERATIONS
 			print("Iteration", self.ITERATIONS, "Current best pathlen:", self.LastBest.fitness)
-		if self.ITERATIONS - self.LastBestIter > 10000:
-			print("Didn't find a longer path for the last 10,000 steps...")
+		if self.ITERATIONS - self.LastBestIter > self.ITER_STOP:
+			print("Didn't find a longer path for the last", self.ITER_STOP, "steps...")
 			print("Here is my best solution after", self.LastBestIter, "steps with length", self.LastBest.fitness)
 			print(self.LastBest)
 			self.RUN = False
@@ -225,7 +234,6 @@ class InverseTSP(EvolutionaryAlgorithm):
 
 if __name__ == '__main__':
 	E = True
-
 	if not E: # D
 		def f(genome):
 			# Just some polynomial function for testing
@@ -233,15 +241,14 @@ if __name__ == '__main__':
 		ev = ProgrammingD(f)
 		ev.perform()
 	else: # E
-		DEBUG = True
+		DEBUGGING = False
 		# The parameters P, μ and λ, are to be set by the user at runtime
 		# P = no. of individuals to have after INIT or INHERITANCE and during MUTATION and FITNESS EVAL
 		# µ = no. of individuals that survive the EXTERNAL SELECTION phase (the new parents for PAR. SEL. and INHERITANCE)
 		# λ = no. if individuals that are DISCARDED during EXT. SEL. and generated in INHERITANCE phase (offspring)
-
-		if DEBUG:
-			P = 10
-			µ = 5
+		if DEBUGGING:
+			P = 100
+			µ = 50
 		else:
 			try:
 				P = int(input("P? "))
@@ -258,9 +265,14 @@ if __name__ == '__main__':
 				screwthis("µ>0 please")
 			if P-µ <= 0:
 				screwthis("P>µ please")
-			print("λ=", λ)
-
-		ev = InverseTSP(P, µ)
+			print("λ=", P-µ)
+		ev = ProgrammingE(P, µ)
 		ev.perform()
 
+"""
+Reaching a path length of 50,000 is more or less easy and often happens after a
+few hundred iterations (depending on P, µ, λ) (although not always).
+After that, it continues to grow, but not as fast as before.
+The highest values ever reached during testing was 50233.89557516754
+"""
 
