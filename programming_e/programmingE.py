@@ -17,7 +17,7 @@ class Individual(object):
 	def calc_fitness(self, f):
 		self.fitness = f(self.genome)
 	def __str__(self):
-		return ("<<<Genome: %s; Fitness: %d>>>" % ([round(x,2) for x in self.genome], self.fitness))
+		return ("<<<Genome: %s; Fitness: %d>>>" % (self.genome, self.fitness))
 
 class EvolutionaryAlgorithm(object):
 
@@ -125,7 +125,7 @@ class ProgrammingD(EvolutionaryAlgorithm):
 			print("Found candicate with fitness over 1 million after %d iterations!" % self.ITERATIONS)
 
 
-class ProgrammingE(EvolutionaryAlgorithm):
+class InverseTSP(EvolutionaryAlgorithm):
 
 	# Write a C, C++, Java or Python Programm, that implements an evolutionary
 	# algorithm to maximize the length of a route going twice through a given
@@ -153,9 +153,10 @@ class ProgrammingE(EvolutionaryAlgorithm):
 	def pathlen(self, genome):
 		# genome is just a list of len(X)*2 pairs
 		# just calculate the length of the whole path
+		assert len(genome) == self.N*2
 		dist = 0
 		for idx in range(len(genome)-1):
-			dist += math.sqrt ( abs(genome[idx][0]-genome[idx+1][0])**2 + abs(genome[idx][1]-genome[idx+1][1])**2 )
+			dist += math.hypot((genome[idx][0]-genome[idx+1][0]), (genome[idx][1]-genome[idx+1][1]))
 		return dist
 
 	def Initialization(self):
@@ -164,13 +165,13 @@ class ProgrammingE(EvolutionaryAlgorithm):
 		for _ in range(self.P):
 			path = self.X + self.X # visit all points exactly twice
 			random.shuffle(path) # randomly shuffle the path
+			assert len(path) == self.N*2
 			indi = Individual(path) # new individual, TADA
 			self.Population.append(indi)
 		assert len(self.Population) == self.P
 		self.NewPopulation = []
-
-	#	sys.exit(42)
-
+		self.LastBest = None
+		self.LastBestIter = 0
 
 	def ParentSelection(self):
 		# during this whole phase we have pop. size µ
@@ -186,7 +187,7 @@ class ProgrammingE(EvolutionaryAlgorithm):
 		# Taking parts of paths from different parents would completely often destroy this property.
 		for _ in range(self.λ):
 			# Simple approach: All λ offspring is just a copy of the current best individual
-			self.NewPopulation.append(self.BestIndividual)
+			self.NewPopulation.append(copy.deepcopy(self.BestIndividual))
 		assert len(self.NewPopulation) == self.λ
 
 	def Mutation(self):
@@ -224,8 +225,16 @@ class ProgrammingE(EvolutionaryAlgorithm):
 		# Gnuplot readable format.
 		# Depict and draw the development of these three values into a graph.
 		# Hand it in together with the other solutions.
-		print("Current best pathlen:", self.Population[0].fitness)
-
+		assert len(self.Population) == self.µ
+		if not self.LastBest or self.LastBest.fitness < self.Population[0].fitness:
+			self.LastBest = self.Population[0]
+			self.LastBestIter = self.ITERATIONS
+			print("Iteration", self.ITERATIONS, "Current best pathlen:", self.LastBest.fitness)
+		if self.ITERATIONS - self.LastBestIter > 10000:
+			print("Didn't find a longer path for the last 10,000 steps...")
+			print("Here is my best solution after", self.LastBestIter, "steps with length", self.LastBest.fitness)
+			print(self.LastBest)
+			self.RUN = False
 
 
 if __name__ == '__main__':
@@ -245,8 +254,8 @@ if __name__ == '__main__':
 		# λ = no. if individuals that are DISCARDED during EXT. SEL. and generated in INHERITANCE phase (offspring)
 
 		if DEBUG:
-			P = 100
-			µ = 50
+			P = 10
+			µ = 5
 		else:
 			try:
 				P = int(input("P? "))
@@ -265,7 +274,7 @@ if __name__ == '__main__':
 				screwthis("P>µ please")
 			print("λ=", λ)
 
-		ev = ProgrammingE(P, µ)
+		ev = InverseTSP(P, µ)
 		ev.perform()
 
 
