@@ -8,7 +8,7 @@ import math
 import sys
 import time
 
-PLOTTING = True
+PLOTTING = False
 PlotData = []
 
 def screwthis(x):
@@ -283,11 +283,4 @@ if __name__ == '__main__':
 			plt.ylabel('Maximal fitness')
 			plt.plot(PlotData)
 			plt.show()
-
-"""
-Reaching a path length of 50,000 is more or less easy and often happens after a
-few hundred iterations (depending on P, µ, λ) (although not always).
-After that, it continues to grow, but not as fast as before.
-The highest value ever reached during testing was 50233.89557516754
-"""
 
