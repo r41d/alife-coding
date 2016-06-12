@@ -8,6 +8,9 @@ import math
 import sys
 import time
 
+PLOTTING = True
+PlotData = []
+
 def screwthis(x):
 	print(x)
 	sys.exit(1)
@@ -191,8 +194,10 @@ class ProgrammingE(EvolutionaryAlgorithm):
 			# Simple approach: All λ offspring is just a copy of the current best individual
 			#self.NewPopulation.append(copy.deepcopy(self.BestIndividual))
 		# Better approach: Sample from the top
-		self.NewPopulation.extend( random.sample(self.BestIndividuals, self.λ-1) )
-		## TODO: FIX possible ValueError
+		BestIndividuals = self.BestIndividuals
+		while len(BestIndividuals) < self.λ: # multiply list to avoid ValueError from sample()
+			BestIndividuals.extend(self.BestIndividuals)
+		self.NewPopulation.extend(random.sample(BestIndividuals, self.λ-1))
 
 	def Mutation(self):
 		# during this whole phase we have pop. size P
@@ -221,6 +226,8 @@ class ProgrammingE(EvolutionaryAlgorithm):
 		# Gnuplot readable format.
 		# Depict and draw the development of these three values into a graph.
 		# Hand it in together with the other solutions.
+		if self.LastBest != None:
+			PlotData.append(self.LastBest.fitness)
 		if not self.LastBest or self.LastBest.fitness < self.Population[0].fitness:
 			self.LastBest = self.Population[0]
 			self.LastBestIter = self.ITERATIONS
@@ -248,7 +255,7 @@ if __name__ == '__main__':
 		# λ = no. if individuals that are DISCARDED during EXT. SEL. and generated in INHERITANCE phase (offspring)
 		if DEBUGGING:
 			P = 100
-			µ = 50
+			µ = 10
 		else:
 			try:
 				P = int(input("P? "))
@@ -269,10 +276,18 @@ if __name__ == '__main__':
 		ev = ProgrammingE(P, µ)
 		ev.perform()
 
+		if PLOTTING:
+			import matplotlib.pyplot as plt
+			plt.title('Performance Graph for Development of best fitness within the polulation')
+			plt.xlabel('Iterations')
+			plt.ylabel('Maximal fitness')
+			plt.plot(PlotData)
+			plt.show()
+
 """
 Reaching a path length of 50,000 is more or less easy and often happens after a
 few hundred iterations (depending on P, µ, λ) (although not always).
 After that, it continues to grow, but not as fast as before.
-The highest values ever reached during testing was 50233.89557516754
+The highest value ever reached during testing was 50233.89557516754
 """
 
